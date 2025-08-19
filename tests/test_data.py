@@ -9,3 +9,4 @@ def test_load_imdb_data():
     assert "sentiment" in df.columns, "DataFrame must contain 'sentiment' column"
     assert len(df) > 0, "DataFrame must not be empty"
 
+test_load_imdb_data()
