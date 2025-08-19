@@ -95,8 +95,7 @@ class Evaluater:
             # =========================
             # Polling step for approval
             # =========================
-            print("Waiting for manual approval "\ 
-            "in MLflow UI...")
+            print("Waiting for manual approval in MLflow UI")
             approved_model = None
             while not approved_model:
                 client = mlflow.tracking.MlflowClient()
