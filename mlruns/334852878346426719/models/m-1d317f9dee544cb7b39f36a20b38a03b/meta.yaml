@@ -1,0 +1,10 @@
+artifact_location: file:///C:/Users/ASUS/Desktop/Machine%20Learning%20Projects/mlops-imdb-reviews-analysis/mlruns/334852878346426719/models/m-1d317f9dee544cb7b39f36a20b38a03b/artifacts
+creation_timestamp: 1755520967151
+experiment_id: '334852878346426719'
+last_updated_timestamp: 1755520983286
+model_id: m-1d317f9dee544cb7b39f36a20b38a03b
+model_type: null
+name: LogisticRegression_model
+source_run_id: ef8271740a944a3a95d74d6beba8f3de
+status: 2
+status_message: null

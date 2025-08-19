@@ -1,0 +1,10 @@
+artifact_location: file:///C:/Users/ASUS/Desktop/Machine%20Learning%20Projects/mlops-imdb-reviews-analysis/mlruns/334852878346426719/models/m-4801e4b789c440308cbf2028bc327d36/artifacts
+creation_timestamp: 1755521001755
+experiment_id: '334852878346426719'
+last_updated_timestamp: 1755521011170
+model_id: m-4801e4b789c440308cbf2028bc327d36
+model_type: null
+name: SVM_model
+source_run_id: f55087d8cc1d46eb938b2b13a0a8a4dd
+status: 2
+status_message: null

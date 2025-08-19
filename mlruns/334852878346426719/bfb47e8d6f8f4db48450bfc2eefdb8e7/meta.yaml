@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/ASUS/Desktop/Machine%20Learning%20Projects/mlops-imdb-reviews-analysis/mlruns/334852878346426719/bfb47e8d6f8f4db48450bfc2eefdb8e7/artifacts
+end_time: 1755520993862
+entry_point_name: ''
+experiment_id: '334852878346426719'
+lifecycle_stage: active
+run_id: bfb47e8d6f8f4db48450bfc2eefdb8e7
+run_name: NaiveBayes
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1755520983558
+status: 3
+tags: []
+user_id: ASUS

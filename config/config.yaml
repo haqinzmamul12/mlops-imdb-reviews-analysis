@@ -1,0 +1,14 @@
+data:
+  raw_path: "dataset/raw_imdb.csv"
+  interim_path: "dataset/interim.csv"
+  cleaned_path: "dataset/cleaned.csv"
+
+model:
+  vectorizer_path: "models/tfidf_vectorizer.pkl"
+  model_path: "models/model.pkl"
+
+training:
+  test_size: 0.2
+  random_state: 42
+
+

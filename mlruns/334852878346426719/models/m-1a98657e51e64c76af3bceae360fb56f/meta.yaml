@@ -1,0 +1,10 @@
+artifact_location: file:///C:/Users/ASUS/Desktop/Machine%20Learning%20Projects/mlops-imdb-reviews-analysis/mlruns/334852878346426719/models/m-1a98657e51e64c76af3bceae360fb56f/artifacts
+creation_timestamp: 1755520986798
+experiment_id: '334852878346426719'
+last_updated_timestamp: 1755520993609
+model_id: m-1a98657e51e64c76af3bceae360fb56f
+model_type: null
+name: NaiveBayes_model
+source_run_id: bfb47e8d6f8f4db48450bfc2eefdb8e7
+status: 2
+status_message: null

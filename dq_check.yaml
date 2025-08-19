@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: imdb-dq-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: imdb-dq-job
+        image: haqinzmamul12/imdb-dq-job:latest
+        volumeMounts:
+        - name: data-volume
+          mountPath: /dataset
+      restartPolicy: Never
+      volumes:
+      - name: data-volume
+        hostPath:
+          path: /dataset
+  backoffLimit: 3

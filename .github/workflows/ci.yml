@@ -1,0 +1,34 @@
+name: CI Pipeline 
+
+on:
+    push:
+        branches: [ main ]
+    pull_request:
+        branches: [ main ]
+
+
+jobs:
+    lint-test:
+        name: Lint, Format and Test 
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: checkout repo 
+              uses: actions/checkout@v3 
+
+            - name: set up run time
+              uses: actions/setup-python@v4 
+              with:
+                python-version: 3.13.2 
+                
+            - name: install dependencies 
+              run: | 
+                pip install -r requirements.txt 
+                pip install pytest black flake8
+
+            - name: format check with Black 
+              run: black --check src/
+
+            - name: Run unit tests
+              run: pytest/tests
+

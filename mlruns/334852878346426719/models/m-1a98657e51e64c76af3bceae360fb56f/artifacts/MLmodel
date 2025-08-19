@@ -1,0 +1,22 @@
+artifact_path: file:///C:/Users/ASUS/Desktop/Machine%20Learning%20Projects/mlops-imdb-reviews-analysis/mlruns/334852878346426719/models/m-1a98657e51e64c76af3bceae360fb56f/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.13.2
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.7.1
+mlflow_version: 3.2.0
+model_id: m-1a98657e51e64c76af3bceae360fb56f
+model_size_bytes: 20898
+model_uuid: m-1a98657e51e64c76af3bceae360fb56f
+prompts: null
+run_id: bfb47e8d6f8f4db48450bfc2eefdb8e7
+utc_time_created: '2025-08-18 12:43:06.897560'

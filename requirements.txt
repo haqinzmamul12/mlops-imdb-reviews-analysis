@@ -1,0 +1,11 @@
+pandas
+scikit-learn
+mlflow
+dvc[s3]
+streamlit
+prometheus-client
+pyyaml
+pandera
+nltk
+apache-airflow
+pytest
