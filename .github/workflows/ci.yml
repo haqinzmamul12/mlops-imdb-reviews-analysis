@@ -56,3 +56,16 @@ jobs:
       # ---- TEST ----
       - name: Run unit tests
         run: pytest tests/
+
+  run-ml-pipeline:
+    name: Trigger Airflow ML Pipeline
+    needs: lint-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Airflow DAG
+        run: |
+          echo "Triggering Airflow DAG imdb_ml_pipeline_dag..."
+          curl -X POST "http://$AIRFLOW_HOST:8080/api/v1/dags/imdb_ml_pipeline_dag/dagRuns" \
+            -H "Content-Type: application/json" \
+            -u "airflow:${{ secrets.AIRFLOW_PASSWORD }}" \
+            -d '{"conf": {}}'
