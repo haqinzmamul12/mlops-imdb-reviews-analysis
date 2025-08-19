@@ -1,34 +1,52 @@
 name: CI Pipeline 
 
 on:
-    push:
-        branches: [ main ]
-    pull_request:
-        branches: [ main ]
-
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-    lint-test:
-        name: Lint, Format and Test 
-        runs-on: ubuntu-latest
+  lint-test:
+    name: Format, Lint and Test 
+    runs-on: ubuntu-latest
 
-        steps:
-            - name: checkout repo 
-              uses: actions/checkout@v3 
+    steps:
+      - name: Checkout repo 
+        uses: actions/checkout@v3 
 
-            - name: set up run time
-              uses: actions/setup-python@v4 
-              with:
-                python-version: 3.13.2 
-                
-            - name: install dependencies 
-              run: | 
-                pip install -r requirements.txt 
-                pip install pytest black flake8
+      - name: Set up Python
+        uses: actions/setup-python@v4 
+        with:
+          python-version: "3.10"
 
-            - name: format check with Black 
-              run: black --check src/
+      - name: Install dependencies 
+        run: | 
+          pip install -r requirements.txt 
+          pip install pytest black flake8 dvc[s3]
 
-            - name: Run unit tests
-              run: pytest/tests
+      # ---- DVC STEPS ----
+      - name: Pull dataset from DVC remote
+        run: |
+          dvc pull
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
 
+      - name: Verify dataset is available
+        run: ls -lh data/
+
+      # ---- FORMAT + LINT ----
+      - name: Reformat code with Black
+        run: black .  # reformats all Python files from repo root
+
+      - name: Check formatting with Black
+        run: black --check .
+
+      - name: Lint with Flake8
+        run: flake8 .
+      
+      # ---- TEST ----
+      - name: Run unit tests
+        run: pytest tests/

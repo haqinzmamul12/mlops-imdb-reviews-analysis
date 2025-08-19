@@ -15,7 +15,7 @@ if st.button("Predict"):
         st.warning("Please enter a review first.")
     else:
         # Preprocess + predict
-        cleaned_text =DataTransformation().clean_text(user_input)
+        cleaned_text = DataTransformation().clean_text(user_input)
 
-        label =predict_sentiment([cleaned_text])
+        label = predict_sentiment([cleaned_text])
         st.success(f"Prediction: {label}")

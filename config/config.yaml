@@ -1,5 +1,5 @@
 data:
-  raw_path: "dataset/raw_imdb.csv"
+  raw_path: "dataset/raw.csv"
   interim_path: "dataset/interim.csv"
   cleaned_path: "dataset/cleaned.csv"
 

@@ -1,5 +1,6 @@
 import pickle
 
+
 def dump_model(path, model):
     try:
         with open(path, "wb") as f:
