@@ -18,7 +18,7 @@ class FeatureBuilder:
             df_interim = load_imdb_data("interim")
 
             print("interim data procesing...")
-            vectorizer = TfidfVectorizer(max_features=500)
+            vectorizer = TfidfVectorizer(max_features=300)
             X = vectorizer.fit_transform(df_interim["review"])
             df_interim["sentiment"] = df_interim["sentiment"].apply(
                 lambda x: 1 if x == "positive" else 0
@@ -39,5 +39,4 @@ class FeatureBuilder:
             print(f"Error Encountered: {repr(e)}")
 
 
-if __name__ == "__main__":
-    FeatureBuilder().build_tfidf_features()
+
