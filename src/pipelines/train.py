@@ -1,4 +1,3 @@
-import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from src.features.build_feature import FeatureBuilder
@@ -31,7 +30,7 @@ class ModelTrainer:
             # Train model
             model = LogisticRegression(max_iter=200)
             model.fit(X_train, y_train)
-            print(f"model trained successfully!")
+            print("model trained successfully!")
             dump_model(self.output_path, model)
 
         except Exception as e:

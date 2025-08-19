@@ -3,7 +3,7 @@ from src.pipelines.predict import predict_sentiment
 from src.features.text_cleaning import DataTransformation
 
 st.title("🎬 IMDb Sentiment Analysis")
-st.write("Enter a movie review below and get the sentiment prediction.")
+st.write("Enter a movie review and get the sentiment prediction.")
 
 
 # User input

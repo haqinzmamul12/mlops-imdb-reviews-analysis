@@ -30,7 +30,8 @@ class FeatureBuilder:
                 [df_interim["sentiment"].reset_index(drop=True), X_df], axis=1
             )
             print(
-                f"TF-IDF features built: {X_df.shape[1]-1} features + sentiment for {X_df.shape[0]} samples"
+                f"TF-IDF features built: {X_df.shape[1]-1} features\
+                  + sentiment for {X_df.shape[0]} samples"
             )
             df_cleaned.to_csv(self.cleaned, index=False)
             dump_model(self.vectorizer_path, vectorizer)

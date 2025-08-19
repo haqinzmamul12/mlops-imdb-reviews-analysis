@@ -17,12 +17,14 @@ def ingest_data():
 
     raw_path = config["data"]["raw_imdb"]
     df = load_imdb_data(raw_path)
-    print(f"Data Ingestion Pipeline Started Successfully!")
+    print("Data Ingestion Pipeline Started Successfully!")
+    print(f"Data shape: {df.shape}")
+
 
 
 def preprocess_data():
     """Preprocess text data"""
-    print(f"Data Pre-processing Pipeline Started Successfully!")
+    print("Data Pre-processing Pipeline Started Successfully!")
 
     transformer = DataTransformation()
     transformer.preprocess_data()
@@ -33,14 +35,14 @@ def preprocess_data():
 
 def train_model():
     """Train sentiment model"""
-    print(f"Model Training Pipeline Started Successfully!")
+    print("Model Training Pipeline Started Successfully!")
     trainer = ModelTrainer()
     trainer.train_model()
 
 
 def evaluate_model():
     """Evaluate multiple models + log MLflow"""
-    print(f"Model Evaluation Pipeline Started Successfully!")
+    print("Model Evaluation Pipeline Started Successfully!")
 
     evaluater = Evaluater()
     evaluater.evaluate_and_experiment()
