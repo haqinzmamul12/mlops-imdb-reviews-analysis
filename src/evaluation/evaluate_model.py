@@ -1,8 +1,7 @@
 import mlflow
 import mlflow.sklearn
 from sklearn.model_selection import RandomizedSearchCV
-from sklearn.metrics import accuracy_score,\
-precision_score, recall_score, f1_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.naive_bayes import MultinomialNB
@@ -45,9 +44,9 @@ class Evaluater:
                 X, y, test_size=0.2, random_state=42, stratify=y
             )
 
-            # best_model = None
-            # best_score = 0
-            # best_model_name = None
+            best_model = None
+            best_score = 0
+            best_model_name = None
 
             mlflow.set_experiment("IMDB-Sentiment-Analysis")
 
@@ -85,8 +84,7 @@ class Evaluater:
 
                     # Log model into Registry
                     model_uri = f"runs:/{run.info.run_id}/{model_name}_model"
-                    mlflow.sklearn.log_model(best_estimator,\
-                                              f"{model_name}_model")
+                    mlflow.sklearn.log_model(best_estimator, f"{model_name}_model")
                     mv = mlflow.register_model(model_uri, "IMDBClassifier")
 
                     print(f"{model_name} → Accuracy: {acc:.4f}, F1: {f1:.4f}")
@@ -95,12 +93,11 @@ class Evaluater:
             # =========================
             # Polling step for approval
             # =========================
-            print("Waiting for manual approval in MLflow UI")
+            print("Waiting for manual approval in MLflow UI...")
             approved_model = None
             while not approved_model:
                 client = mlflow.tracking.MlflowClient()
-                versions = client.search_model_versions( \
-                    "name='IMDBClassifier'")
+                versions = client.search_model_versions("name='IMDBClassifier'")
                 for v in versions:
                     # OLD: if v.current_stage == "Production":
                     if "challenger" in getattr(v, "aliases", []):  # check alias
@@ -110,8 +107,7 @@ class Evaluater:
                     time.sleep(15)  # poll every 15 sec
 
             print(
-                f"Approved model: Version {approved_model.version}, \
-                  Stage: {approved_model.current_stage}"
+                f"Approved model: Version {approved_model.version}, Stage: {approved_model.current_stage}"
             )
 
         except Exception as e:

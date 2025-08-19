@@ -37,12 +37,6 @@ def test_model_training_and_prediction():
 
     predictions = ["positive" if x else "negative" for x in predictions]
 
-    assert len(predictions) == len(
-        test_reviews
-    ), "Number of predictions must match input"
-    assert all(
-        p in ["positive", "negative"] for p in predictions
-    ), "Predictions must be valid labels"
+    assert len(predictions) == len(test_reviews), "Number of predictions must match input"
+    assert all(p in ["positive", "negative"] for p in predictions), "Predictions must be valid labels"
 
-
-test_model_training_and_prediction()

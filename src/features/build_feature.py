@@ -20,9 +20,7 @@ class FeatureBuilder:
             print("interim data procesing...")
             vectorizer = TfidfVectorizer(max_features=300)
             X = vectorizer.fit_transform(df_interim["review"])
-            df_interim["sentiment"] = df_interim["sentiment"].apply(
-                lambda x: 1 if x == "positive" else 0
-            )
+            df_interim["sentiment"] = df_interim["sentiment"].apply(lambda x: 1 if x == "positive" else 0)
 
             feature_names = vectorizer.get_feature_names_out()
             X_df = pd.DataFrame(X.toarray(), columns=feature_names)
@@ -30,8 +28,7 @@ class FeatureBuilder:
                 [df_interim["sentiment"].reset_index(drop=True), X_df], axis=1
             )
             print(
-                f"TF-IDF features built: {X_df.shape[1]-1} features\
-                  + sentiment for {X_df.shape[0]} samples"
+                f"TF-IDF features built: {X_df.shape[1]-1} features + sentiment for {X_df.shape[0]} samples"
             )
             df_cleaned.to_csv(self.cleaned, index=False)
             dump_model(self.vectorizer_path, vectorizer)
