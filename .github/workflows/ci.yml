@@ -109,7 +109,7 @@ jobs:
       - name: Trigger ML pipeline DAG 
         run: | 
           echo "Triggering DAG: ml_pipeline_dag"
-          airflow dags trigger -e 2025-08-20 ml_pipline_dag 
+          airflow dags trigger -e 2025-08-20 ml_pipeline_dag 
 
       - name: Wait and monitor DAG run 
         run: | 
