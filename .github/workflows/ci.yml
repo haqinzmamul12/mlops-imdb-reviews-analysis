@@ -105,7 +105,9 @@ jobs:
       # 6. Trigger DAG run
       - name: Trigger ML pipeline DAG
         run: |
-          docker exec airflow-scheduler airflow dags trigger -d ml_pipeline_dag
+          RUN_ID="ci_run_$(date +%s)"
+          docker exec airflow-scheduler airflow dags trigger ml_pipeline_dag --run-id "$RUN_ID"
+          echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
 
       # 7. Wait for DAG to finish (optional, for CI success/failure)
       - name: Monitor DAG run
