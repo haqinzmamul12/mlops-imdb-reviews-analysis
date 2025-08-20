@@ -67,17 +67,63 @@ jobs:
       - name: set up python 
         uses: actions/setup-python@v4 
         with:
-          python-version: '3.10'
+          python-version: '3.9'
 
-      - name: Install dependencies 
+      - name: Install Airflow and dependencies 
         run: | 
+          export AIRFLOW_VERSION =2.8.1 
+          export PYTHON_VERSION =3.9 
+          export CONSTRAINT_URL ="https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/${PYTHON_VERSION}.txt"
+
           python -m pip install --upgrade pip 
-          pip install apache-airflow==2.8.1 
+          pip install "apache-airflow==${AIRFLOW_VERSION}" --constraint "${CONSTRAINT_URL}"
           pip install -r requirements.txt
 
-      - name: Check DAG file syntax 
+      - name: Set PYTHONPATH
         run: | 
-          export PYTHONPATH=$PYTHONPATH:$(pwd)
-          python airflow_orchestrator/dags/ml_pipeline_dag.py
+          echo "PYTHONPATH =$(pwd)" >> $GITHUB_ENV
+
+      - name: Initialize Airflow 
+        run: | 
+          airflow db init 
+
+      - name: Copy DAGs 
+        run: | 
+          mkdir -p ~/airflow/dags 
+          cp -r airflow_orchestrator/dags/* ~/airflow/dags/ 
+
+      - name: List available DAGs 
+        run: | 
+          airfllow dags list 
+
+      - name: Trigger ML pipeline DAG 
+        run: | 
+          echo "Triggering DAG: ml_pipeline_dag"
+          airflow dags trigger -e 2025-08-20 ml_pipline_dag 
+
+      - name: Wait and monitor DAG run 
+        run: | 
+          echo "Waiting 60s for DAG to execute tasks..."
+          sleep 60 
+          echo "Checking DAG run status:" 
+          airflow dags list-runs -d ml_pipeline_dag 
+
+      - name: Show task logs 
+        run: | 
+          echo "Fetching logs from the most recent DSG run:"
+          DAG_RUN_ID =$(airflow dags list-runs -d ml_pipeline_dag -o json | jq -r '.[0].run_id')
+          echo "DAG RUN ID: $DAG_RUN_ID"
+          echo "Listing all tasks in DAG 'ml_pipeline_dag':"
+          airflow tasks list ml_pipeline_dag 
+          
+          echo "Printing logs for each task in the DAG..." 
+          for TASK_ID in data_ingestion data_preprocessing train_model evaluate_models 
+          do
+            echo "=============================================="
+            echo "Logs for Task: $TASK_ID"
+            echo "=============================================="
+            airflow tasks logs ml_pipeline_dag "$TASK_ID" "$DAG_RUN_ID" || echo "No logs for $TASK_ID"
+            ech ""
+          done
 
 

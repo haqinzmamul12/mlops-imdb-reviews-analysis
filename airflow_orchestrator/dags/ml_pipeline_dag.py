@@ -50,7 +50,7 @@ def evaluate_model():
 
 # Define DAG
 with DAG(
-    dag_id="imdb_sentiment_pipeline",
+    dag_id="ml_pipeline_dag",
     start_date=datetime(2025, 8, 18),
     schedule_interval=None,  # Run manually for now
     catchup=False,
