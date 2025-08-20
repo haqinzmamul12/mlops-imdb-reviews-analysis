@@ -56,31 +56,61 @@ jobs:
       - name: Run unit tests
         run: pytest tests/
 
-  run-ml-pipeline:
+  airflow-pipeline:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:13
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: airflow
+          POSTGRES_PASSWORD: airflow
+          POSTGRES_DB: airflow
+        options: >-
+          --health-cmd "pg_isready -U airflow"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
-      # 1. Checkout repo
+      # 1. Checkout code
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Set up Python
+      # 2. Set up Python (for CLI / client side if needed)
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'   # or 3.10 (check your airflow version compatibility)
+          python-version: '3.9'
 
-      # 3. Install dependencies
-      - name: Install dependencies
+      # 3. Install Docker Compose
+      - name: Install Docker Compose
         run: |
-          python -m pip install --upgrade pip
-          pip install apache-airflow==2.7.2 --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.7.2/constraints-3.9.txt"
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
 
-      # 4. Run ML pipeline DAG script
-      - name: Run ML pipeline DAG script
+      # 4. Build Airflow Docker image
+      - name: Build Airflow image
         run: |
-          python airflow_orchestrator/dags/ml_pipeline_dag.py
+          docker-compose -f docker-compose.yml build
+
+      # 5. Start Airflow (scheduler + webserver + workers)
+      - name: Start Airflow
+        run: |
+          docker-compose -f airflow_pipe/docker-compose.yml up -d
+          sleep 60  # give time for Airflow to initialize
+
+      # 6. Trigger DAG run
+      - name: Trigger ML pipeline DAG
+        run: |
+          docker exec airflow-scheduler airflow dags trigger -d ml_pipeline
+
+      # 7. Wait for DAG to finish (optional, for CI success/failure)
+      - name: Monitor DAG run
+        run: |
+          docker exec airflow-scheduler airflow dags state ml_pipeline $(date +%Y-%m-%d)T00:00:00+00:00
 
   
          
