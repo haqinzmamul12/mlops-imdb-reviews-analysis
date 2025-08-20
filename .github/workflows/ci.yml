@@ -87,6 +87,13 @@ jobs:
         run: | 
           echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
 
+      - name: Set AIRFLOW_HOME and disable examples 
+        run: | 
+          export AIRFLOW_HOME=$HOME/airflow
+          export AIRFLOW__CORE__DAGS_FOLDER=$AIRFLOW_HOME/dags 
+          export AIRFLOW__CORE__LOAD_EXAMPLES=False 
+          echo "AIRFLOW_HOME=$AIRFLOW_HOME" >> $GITHUB_ENV
+
       - name: Initialize Airflow 
         run: |  
           airflow db init 
