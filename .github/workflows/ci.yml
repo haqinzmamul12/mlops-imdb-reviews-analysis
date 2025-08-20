@@ -56,93 +56,34 @@ jobs:
       - name: Run unit tests
         run: pytest tests/
 
-  airflow-dag-check:
-    name: Run ML Pipelines
-    runs-on: ubuntu-latest 
+  run-ml-pipeline:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: checkout code 
-        uses: actions/checkout@v3 
+      # 1. Checkout repo
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: set up python 
-        uses: actions/setup-python@v4 
+      # 2. Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: '3.9'   # or 3.10 (check your airflow version compatibility)
 
-      - name: Install Airflow and dependencies 
-        run: | 
-          export AIRFLOW_VERSION=2.8.1 
-          export PYTHON_VERSION=3.9 
-          export CONSTRAINT_URL="https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt"
-
-          python -m pip install --upgrade pip 
-          pip install "apache-airflow==${AIRFLOW_VERSION}" --constraint "${CONSTRAINT_URL}"
-          pip install -r requirements.txt
-
-      - name: Install virtualenv 
+      # 3. Install dependencies
+      - name: Install dependencies
         run: |
-          pip install virtualenv
+          python -m pip install --upgrade pip
+          pip install apache-airflow==2.7.2 --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.7.2/constraints-3.9.txt"
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Set PYTHONPATH
-        run: | 
-          echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
-
-      - name: Set AIRFLOW_HOME and disable examples 
-        run: | 
-          export AIRFLOW_HOME="$(pwd)/airflow_orchestrator/dags/"
-          echo "DAG folder path: $AIRFLOW_HOME"
-          export AIRFLOW__CORE__DAGS_FOLDER=$AIRFLOW_HOME/dags 
-          export AIRFLOW__CORE__LOAD_EXAMPLES=False 
-          echo "AIRFLOW_HOME=$AIRFLOW_HOME" >> $GITHUB_ENV
-
-      - name: Initialize Airflow 
-        run: |  
-          airflow db init 
-
-      # - name: Copy DAGs 
-      #   run: | 
-      #     mkdir -p ~/airflow/dags 
-      #     cp -r airflow_orchestrator/dags/* ~/airflow/dags/ 
-
-      - name: Check DAG import errors 
-        run: | 
-          echo "Checking DAG import errors..." 
-          airflow dags list-import-errors  
-
-      - name: Wait for DAG to be registered 
+      # 4. Run ML pipeline DAG script
+      - name: Run ML pipeline DAG script
         run: |
-          echo "Waiting for DAG to be registered ..."
-          airflow dags list 
-          sleep 10   # Allow airflow to parse the DAG
+          python airflow_orchestrator/dags/ml_pipeline_dag.py
 
-      - name: Trigger ML pipeline DAG 
-        run: | 
-          echo "Triggering DAG: ml_pipeline_dag"
-          airflow dags trigger -e 2025-08-20 ml_pipeline_dag 
+  
+         
 
-      - name: Wait and monitor DAG run 
-        run: | 
-          echo "Waiting 60s for DAG to execute tasks..."
-          sleep 60 
-          echo "Checking DAG run status:" 
-          airflow dags list-runs -d ml_pipeline_dag 
-
-      - name: Show task logs 
-        run: | 
-          echo "Fetching logs from the most recent DSG run:"
-          DAG_RUN_ID =$(airflow dags list-runs -d ml_pipeline_dag -o json | jq -r '.[0].run_id')
-          echo "DAG RUN ID: $DAG_RUN_ID"
-          echo "Listing all tasks in DAG 'ml_pipeline_dag':"
-          airflow tasks list ml_pipeline_dag 
-          
-          echo "Printing logs for each task in the DAG..." 
-          for TASK_ID in data_ingestion data_preprocessing train_model evaluate_models 
-          do
-            echo "=============================================="
-            echo "Logs for Task: $TASK_ID"
-            echo "=============================================="
-            airflow tasks logs ml_pipeline_dag "$TASK_ID" "$DAG_RUN_ID" || echo "No logs for $TASK_ID"
-            ech ""
-          done
 
 
