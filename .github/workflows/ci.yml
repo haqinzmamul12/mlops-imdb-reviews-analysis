@@ -106,12 +106,13 @@ jobs:
       - name: Check DAG import errors 
         run: | 
           echo "Checking DAG import errors..." 
-          airflow dags list-import-errors 
+          airflow dags list-import-errors  
 
-      - name: List available DAGs 
-        run: | 
-          echo "Listing discovered DAGs:"
+      - name: Wait for DAG to be registered 
+        run: |
+          echo "Waiting for DAG to be registered ..."
           airflow dags list 
+          sleep 10   # Allow airflow to parse the DAG
 
       - name: Trigger ML pipeline DAG 
         run: | 
