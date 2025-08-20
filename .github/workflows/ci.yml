@@ -89,7 +89,7 @@ jobs:
 
       - name: Set AIRFLOW_HOME and disable examples 
         run: | 
-          export AIRFLOW_HOME=$(pwd)
+          export AIRFLOW_HOME="$(pwd)/airflow_orchestrator/dags/"
           export AIRFLOW__CORE__DAGS_FOLDER=$AIRFLOW_HOME/dags 
           export AIRFLOW__CORE__LOAD_EXAMPLES=False 
           echo "AIRFLOW_HOME=$AIRFLOW_HOME" >> $GITHUB_ENV
