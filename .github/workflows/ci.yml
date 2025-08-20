@@ -90,6 +90,7 @@ jobs:
       - name: Set AIRFLOW_HOME and disable examples 
         run: | 
           export AIRFLOW_HOME="$(pwd)/airflow_orchestrator/dags/"
+          echo "DAG folder path: $AIRFLOW_HOME"
           export AIRFLOW__CORE__DAGS_FOLDER=$AIRFLOW_HOME/dags 
           export AIRFLOW__CORE__LOAD_EXAMPLES=False 
           echo "AIRFLOW_HOME=$AIRFLOW_HOME" >> $GITHUB_ENV
@@ -98,10 +99,10 @@ jobs:
         run: |  
           airflow db init 
 
-      - name: Copy DAGs 
-        run: | 
-          mkdir -p ~/airflow/dags 
-          cp -r airflow_orchestrator/dags/* ~/airflow/dags/ 
+      # - name: Copy DAGs 
+      #   run: | 
+      #     mkdir -p ~/airflow/dags 
+      #     cp -r airflow_orchestrator/dags/* ~/airflow/dags/ 
 
       - name: Check DAG import errors 
         run: | 
