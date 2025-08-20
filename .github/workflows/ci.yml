@@ -94,7 +94,7 @@ jobs:
 
       - name: List available DAGs 
         run: | 
-          airfllow dags list 
+          airflow dags list 
 
       - name: Trigger ML pipeline DAG 
         run: | 
