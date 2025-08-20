@@ -73,7 +73,7 @@ jobs:
         run: | 
           export AIRFLOW_VERSION=2.8.1 
           export PYTHON_VERSION=3.9 
-          export CONSTRAINT_URL ="https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/${PYTHON_VERSION}.txt"
+          export CONSTRAINT_URL="https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/${PYTHON_VERSION}.txt"
 
           python -m pip install --upgrade pip 
           pip install "apache-airflow==${AIRFLOW_VERSION}" --constraint "${CONSTRAINT_URL}"
@@ -81,7 +81,7 @@ jobs:
 
       - name: Set PYTHONPATH
         run: | 
-          echo "PYTHONPATH =$(pwd)" >> $GITHUB_ENV
+          echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
 
       - name: Initialize Airflow 
         run: | 
