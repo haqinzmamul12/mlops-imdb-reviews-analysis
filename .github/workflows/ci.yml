@@ -76,6 +76,7 @@ jobs:
 
       - name: Check DAG file syntax 
         run: | 
+          export PYTHONPATH=$PYTHONPATH:$(pwd)
           python airflow_orchestrator/dags/ml_pipeline_dag.py
 
 
