@@ -85,6 +85,7 @@ jobs:
 
       - name: Initialize Airflow 
         run: | 
+          export AIRFLOW__CORE__LOAD_EXAMPLES=False 
           airflow db init 
 
       - name: Copy DAGs 
