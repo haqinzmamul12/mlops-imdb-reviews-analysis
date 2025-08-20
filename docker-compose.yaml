@@ -2,7 +2,8 @@ version: '3'
 
 x-airflow-common: &airflow-common
   image: apache/airflow:2.7.2
-  environment: &airflow-common-env
+  environment:
+    &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'false'
@@ -10,8 +11,8 @@ x-airflow-common: &airflow-common
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-postgres/airflow
   volumes:
     - ./airflow_orchestrator/dags:/opt/airflow/dags
-    - ./airflow_orchestrator/logs:/opt/airflow/logs
-    - ./airflow_orchestrator/plugins:/opt/airflow/plugins
+    - ./logs:/opt/airflow/logs      # ✅ mount logs dir
+    - ./plugins:/opt/airflow/plugins # ✅ mount plugins dir
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     airflow-postgres:
