@@ -92,8 +92,14 @@ jobs:
           mkdir -p ~/airflow/dags 
           cp -r airflow_orchestrator/dags/* ~/airflow/dags/ 
 
+      - name: Check DAG import errors 
+        run: | 
+          echo "Checking DAG import errors..." 
+          airflow dags list-import-errors 
+
       - name: List available DAGs 
         run: | 
+          echo "Listing discovered DAGs:"
           airflow dags list 
 
       - name: Trigger ML pipeline DAG 
