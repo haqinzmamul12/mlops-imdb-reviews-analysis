@@ -102,6 +102,12 @@ jobs:
           docker-compose -f docker-compose.yaml up -d
           sleep 60  # give time for Airflow to initialize
 
+      # Copy DAG into airflow container
+      - name: Copy DAGs into Airflow
+        run: |
+          docker cp airflow_orchestrator/dags/. airflow-scheduler:/opt/airflow/dags/
+          docker cp airflow_orchestrator/dags/. airflow-webserver:/opt/airflow/dags/
+
       # 6. Trigger DAG run
       - name: Trigger ML pipeline DAG
         run: |
