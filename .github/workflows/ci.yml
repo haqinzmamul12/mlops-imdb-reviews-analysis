@@ -94,23 +94,23 @@ jobs:
       # 4. Build Airflow Docker image
       - name: Build Airflow image
         run: |
-          docker-compose -f docker-compose.yml build
+          docker-compose -f docker-compose.yaml build
 
       # 5. Start Airflow (scheduler + webserver + workers)
       - name: Start Airflow
         run: |
-          docker-compose -f airflow_pipe/docker-compose.yml up -d
+          docker-compose -f docker-compose.yaml up -d
           sleep 60  # give time for Airflow to initialize
 
       # 6. Trigger DAG run
       - name: Trigger ML pipeline DAG
         run: |
-          docker exec airflow-scheduler airflow dags trigger -d ml_pipeline
+          docker exec airflow-scheduler airflow dags trigger -d ml_pipeline_dag
 
       # 7. Wait for DAG to finish (optional, for CI success/failure)
       - name: Monitor DAG run
         run: |
-          docker exec airflow-scheduler airflow dags state ml_pipeline $(date +%Y-%m-%d)T00:00:00+00:00
+          docker exec airflow-scheduler airflow dags state ml_pipeline_dag $(date +%Y-%m-%d)T00:00:00+00:00
 
   
          
