@@ -16,7 +16,8 @@ jobs:
 
       - name: Install Git LFS
         run: |
-          sudo apt-get install git-lfs
+          sudo apt-get update
+          sudo apt-get install -y git-lfs
           git lfs install
           git lfs pull
 
@@ -30,17 +31,17 @@ jobs:
           pip install -r requirements.txt 
           pip install pytest black flake8 dvc[s3]
 
-      # # ---- DVC STEPS ----
-      # - name: Pull dataset from DVC remote
-      #   run: |
-      #     dvc pull
-      #   env:
-      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     AWS_DEFAULT_REGION: us-east-1
+      # ---- DVC STEPS ----
+      - name: Pull dataset from DVC remote
+        run: |
+          dvc pull
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
 
-      # - name: Verify dataset is available
-      #   run: ls -lh data/
+      - name: Verify dataset is available
+        run: ls -lh data/
 
       # ---- FORMAT + LINT ----
       - name: Reformat code with Black
@@ -49,14 +50,15 @@ jobs:
       - name: Check formatting with Black
         run: black --check .
 
-      # - name: Lint with Flake8
-      #   run: flake8 .
-      
+      - name: Lint with Flake8
+        run: flake8 .
+
       # ---- TEST ----
       - name: Run unit tests
         run: pytest tests/
 
   airflow-pipeline:
+    name: Airflow DAG Run
     runs-on: ubuntu-latest
 
     services:
@@ -102,7 +104,6 @@ jobs:
           docker-compose -f docker-compose.yaml up -d
           sleep 60  # give time for Airflow to initialize
 
-
       # 6. Trigger DAG run
       - name: Trigger ML pipeline DAG
         run: |
@@ -114,9 +115,3 @@ jobs:
       - name: Monitor DAG run
         run: |
           docker exec airflow-scheduler airflow dags state ml_pipeline_dag $(date +%Y-%m-%d)T00:00:00+00:00
-
-  
-         
-
-
-
