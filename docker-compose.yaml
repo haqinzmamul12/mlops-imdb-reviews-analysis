@@ -2,8 +2,7 @@ version: '3'
 
 x-airflow-common: &airflow-common
   image: apache/airflow:2.7.2
-  environment:
-    &airflow-common-env
+  environment: &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'false'
@@ -11,8 +10,8 @@ x-airflow-common: &airflow-common
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-postgres/airflow
   volumes:
     - ./airflow_orchestrator/dags:/opt/airflow/dags
-    - ./logs:/opt/airflow/logs      # ✅ mount logs dir
-    - ./plugins:/opt/airflow/plugins # ✅ mount plugins dir
+    - ./logs:/opt/airflow/logs       # ✅ Mount logs dir
+    - ./plugins:/opt/airflow/plugins # (optional) keep plugins if needed
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     airflow-postgres:
@@ -38,7 +37,9 @@ services:
     container_name: airflow-init
     entrypoint: >
       /bin/bash -c
-      "airflow db init &&
+      "mkdir -p /opt/airflow/logs &&
+       chmod -R 777 /opt/airflow/logs &&
+       airflow db init &&
        airflow users create --username admin --firstname Admin --lastname User --role Admin --email admin@example.com --password admin"
 
   airflow-scheduler:
