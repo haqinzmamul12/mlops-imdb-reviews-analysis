@@ -98,11 +98,20 @@ jobs:
         run: |
           docker-compose -f docker-compose.yaml build
 
-      # 5. Start Airflow (scheduler + webserver + workers)
+      # 5. Start Airflow (fix perms → init → run services)
       - name: Start Airflow
         run: |
-          docker-compose -f docker-compose.yaml up -d
-          sleep 60  # give time for Airflow to initialize
+          # Step A: Run permissions fix
+          docker-compose -f docker-compose.yaml up -d airflow-permissions
+          sleep 5
+
+          # Step B: Run airflow-init after perms fixed
+          docker-compose -f docker-compose.yaml up airflow-init
+          sleep 10
+
+          # Step C: Start core services
+          docker-compose -f docker-compose.yaml up -d airflow-scheduler airflow-webserver
+          sleep 60  # give Airflow enough time to be ready
 
       # 6. Trigger DAG run
       - name: Trigger ML pipeline DAG
@@ -111,7 +120,8 @@ jobs:
           docker exec airflow-scheduler airflow dags trigger ml_pipeline_dag --run-id "$RUN_ID"
           echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
 
-      # 7. Wait for DAG to finish (optional, for CI success/failure)
+      # 7. Monitor DAG run (basic check)
       - name: Monitor DAG run
         run: |
-          docker exec airflow-scheduler airflow dags state ml_pipeline_dag $(date +%Y-%m-%d)T00:00:00+00:00
+          echo "Checking DAG run status..."
+          docker exec airflow-scheduler airflow dags list-runs -d ml_pipeline_dag | head -n 20
