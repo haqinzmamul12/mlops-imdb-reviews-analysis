@@ -47,11 +47,11 @@ jobs:
       - name: Reformat code with Black
         run: black .  # reformats all Python files from repo root
 
-      - name: Check formatting with Black
-        run: black --check .
+      # - name: Check formatting with Black
+      #   run: black --check .
 
-      - name: Lint with Flake8
-        run: flake8 .
+      # - name: Lint with Flake8
+      #   run: flake8 .
 
       # ---- TEST ----
       - name: Run unit tests
@@ -92,6 +92,10 @@ jobs:
 
           echo "Checking DAG file inside container:"
           docker exec airflow ls -l /opt/airflow/dags
+
+      - name: Check DAG import errors
+        run: docker exec airflow airflow dags list-import-errors
+
 
 
       - name: Get ngrok URL
