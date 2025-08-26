@@ -58,70 +58,83 @@ jobs:
         run: pytest tests/
 
   airflow-pipeline:
-    name: Airflow DAG Run
     runs-on: ubuntu-latest
 
     services:
-      postgres:
-        image: postgres:13
-        ports:
-          - 5432:5432
-        env:
-          POSTGRES_USER: airflow
-          POSTGRES_PASSWORD: airflow
-          POSTGRES_DB: airflow
-        options: >-
-          --health-cmd "pg_isready -U airflow"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+      docker:
+        image: docker:20.10-dind
+        options: --privileged
 
     steps:
-      # 1. Checkout code
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. Set up Python (for CLI / client side if needed)
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v3
 
-      # 3. Install Docker Compose
-      - name: Install Docker Compose
+      - name: Build Airflow Docker image
         run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose
+          docker build -t airflow-mini:latest .
 
-      # 4. Build Airflow Docker image
-      - name: Build Airflow image
+
+      - name: Start Airflow with Docker Compose
         run: |
-          docker-compose -f docker-compose.yaml build
-
-      # 5. Start Airflow (fix perms → init → run services)
-      - name: Start Airflow
-        run: |
-          # Step A: Run permissions fix
-          docker-compose -f docker-compose.yaml up -d airflow-permissions
-          sleep 5
-
-          # Step B: Run airflow-init after perms fixed
-          docker-compose -f docker-compose.yaml up airflow-init
+          export NGROK_AUTHTOKEN=${{ secrets.NGROK_AUTHTOKEN }}
+          docker compose build --no-cache
+          docker compose up -d
+          echo "Waiting for Airflow to be ready..."
           sleep 10
+          echo "container logs:"
+          docker ps -a | grep airflow
 
-          # Step C: Start core services
-          docker-compose -f docker-compose.yaml up -d airflow-scheduler airflow-webserver
-          sleep 60  # give Airflow enough time to be ready
+          echo "airflow dags list:"
+          docker exec airflow airflow dags list
 
-      # 6. Trigger DAG run
-      - name: Trigger ML pipeline DAG
+          echo "Checking DAG file inside container:"
+          docker exec airflow ls -l /opt/airflow/dags
+
+
+      - name: Get ngrok URL
         run: |
-          RUN_ID="ci_run_$(date +%s)"
-          docker exec airflow-scheduler airflow dags trigger ml_pipeline_dag --run-id "$RUN_ID"
-          echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
+          # Wait for ngrok to initialize
+          sleep 10
+          docker logs ngrok 2>&1 | jq -r 'select(.msg=="started tunnel") | .url' | head -n 1
 
-      # 7. Monitor DAG run (basic check)
-      - name: Monitor DAG run
+      - name: Publish ngrok URL
         run: |
-          echo "Checking DAG run status..."
-          docker exec airflow-scheduler airflow dags list-runs -d ml_pipeline_dag | head -n 20
+          URL=$(docker logs ngrok 2>&1 | jq -r 'select(.msg=="started tunnel") | .url' | head -n 1)
+          echo "Airflow UI: $URL" >> $GITHUB_STEP_SUMMARY
+
+
+
+
+      - name: Wait for Airflow
+        run: |
+          for i in {1..1}; do
+            echo "=== Iteration $i ==="
+            echo "--> Container status:"
+            docker ps -a --filter "name=airflow"
+
+            echo "--> Last 20 lines of logs:"
+            docker logs --tail 20 airflow || true
+
+            if docker logs airflow 2>&1 | grep -q "Scheduler started"; then
+              echo "✅ Airflow is ready!"
+              break
+            fi
+
+            echo "⏳ Waiting for Airflow to start..."
+            sleep 10
+          done
+
+
+
+      - name: Trigger DAG
+        run: |
+          docker exec airflow airflow dags trigger ml_pipeline_dag
+          sleep 20
+          docker exec airflow airflow tasks test ml_pipeline_dag print_world $(date +%Y-%m-%d)
+
+
+      - name: Keep alive for 5 mints
+        run: sleep 300
