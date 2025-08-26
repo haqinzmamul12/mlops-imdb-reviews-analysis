@@ -40,6 +40,7 @@ services:
       - "8080:8080"
     volumes:
       - ./airflow_orchestrator/dags:/opt/airflow/dags 
+      - ./src:/opt/airflow/src
 
   ngrok:
     image: ngrok/ngrok:3
