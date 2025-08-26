@@ -41,7 +41,7 @@ jobs:
           AWS_DEFAULT_REGION: us-east-1
 
       - name: Verify dataset is available
-        run: ls -lh data/
+        run: ls -lh dataset/
 
       # ---- FORMAT + LINT ----
       - name: Reformat code with Black

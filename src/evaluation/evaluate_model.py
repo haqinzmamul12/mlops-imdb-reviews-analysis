@@ -3,7 +3,7 @@ import mlflow.sklearn
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
+#from sklearn.ensemble import RandomForestClassifier
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.svm import LinearSVC
 from src.pipelines.train import ModelTrainer
@@ -24,10 +24,10 @@ class Evaluater:
                     "solver": ["liblinear", "saga"],
                 },
             ),
-            "RandomForest": (
-                RandomForestClassifier(),
-                {"n_estimators": [100, 200, 300], "max_depth": [10, 20, None]}
-                ),
+            # "RandomForest": (
+            #     RandomForestClassifier(),
+            #     {"n_estimators": [100, 200, 300], "max_depth": [10, 20, None]}
+            #     ),
 
             "NaiveBayes": (MultinomialNB(), {"alpha": [0.1, 0.5, 1.0]}),
             "SVM": (LinearSVC(), {"C": [0.01, 0.1, 1, 10]}),
