@@ -17,6 +17,8 @@ def load_imdb_data(file_name: str):
 
         df = pd.read_csv(input_path)
         print(f"{file_name} dataset loaded: {df.shape[0]} rows, {df.shape[1]} columns")
+        print("First 5 rocords:")
+        print(df.head())
         return df
 
     except Exception as e:

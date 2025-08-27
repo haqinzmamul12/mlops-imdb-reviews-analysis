@@ -104,6 +104,10 @@ jobs:
           # echo "Checking src file inside container:"
           # docker exec airflow ls -l /opt/airflow/src
 
+          echo "Dataset files are:"
+          docker exec airflow ls -l /opt/airflow/dataset/
+          docker exec airflow head -n 5 /opt/airflow/dataset/raw.csv
+
 
       - name: Check DAG import errors
         run: 
@@ -165,4 +169,4 @@ jobs:
 
 
       - name: Keep alive for 5 mints
-        run: sleep 300
+        run: sleep 120
