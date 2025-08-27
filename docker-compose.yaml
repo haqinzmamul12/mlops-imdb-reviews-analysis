@@ -42,7 +42,6 @@ services:
       - "8080:8080"
     volumes:
       - .:/opt/airflow
-      - ./logs:/opt/airflow/logs
 
 
   ngrok:
