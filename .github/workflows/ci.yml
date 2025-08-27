@@ -146,7 +146,18 @@ jobs:
         run: |
           docker exec airflow airflow dags trigger ml_pipeline_dag
           sleep 20
-          docker exec airflow airflow tasks test ml_pipeline_dag print_world $(date +%Y-%m-%d)
+          
+          # echo "Testing task: ingest_task"
+          # docker exec airflow airflow tasks test ml_pipeline_dag ingest_task $(date +%Y-%m-%d)
+
+          # echo "Testing task: preprocess_task"
+          # docker exec airflow airflow tasks test ml_pipeline_dag preprocess_task $(date +%Y-%m-%d)
+
+          # echo "Testing task: train_task"
+          # docker exec airflow airflow tasks test ml_pipeline_dag train_task $(date +%Y-%m-%d)
+
+          # echo "Testing task: evaluate_task"
+          # docker exec airflow airflow tasks test ml_pipeline_dag evaluate_task $(date +%Y-%m-%d)
 
 
       - name: Keep alive for 5 mints
