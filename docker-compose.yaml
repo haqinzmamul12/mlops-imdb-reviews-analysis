@@ -63,7 +63,7 @@ services:
 
 
 
-  ngrok:
+  ngrok-airflow:
     image: ngrok/ngrok:3
     container_name: ngrok
     command: http airflow:8080 --log=stdout --log-format=json
