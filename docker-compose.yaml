@@ -33,16 +33,15 @@ services:
         condition: service_healthy
 
     environment:
-      #- AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/airflow_orchestrator/dags
       - PYTHONPATH=/opt/airflow/src
       - AIRFLOW__CORE__LOAD_EXAMPLES=false
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
     command: bash -c "airflow db upgrade && airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com && airflow webserver & airflow scheduler"
     ports:
       - "8080:8080"
-    volumes: 
-      - .:/opt/airflow
-      - ./logs:/opt/airflow/logs
+    volumes:
+      - ./airflow_orchestrator/dags:/opt/airflow/dags 
+      - .:/opt/airflow/src
 
   ngrok:
     image: ngrok/ngrok:3
