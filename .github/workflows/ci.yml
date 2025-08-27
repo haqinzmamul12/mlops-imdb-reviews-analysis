@@ -131,16 +131,16 @@ jobs:
           echo "Airflow UI: $AIRFLOW_URL" >> $GITHUB_STEP_SUMMARY
 
 
-      # - name: Get MLflow ngrok URL
-      #   run: |
-      #     echo "⏳ Waiting for ngrok-mlflow to initialize..."
-      #     sleep 10
-      #     docker logs ngrok-mlflow 2>&1 | jq -r 'select(.msg=="started tunnel") | .url' | head -n 1
+      - name: Get MLflow ngrok URL
+        run: |
+          echo "⏳ Waiting for ngrok-mlflow to initialize..."
+          sleep 10
+          docker logs ngrok-mlflow 2>&1 | jq -r 'select(.msg=="started tunnel") | .url' | head -n 1
 
-      # - name: Publish MLflow ngrok URL
-      #   run: |
-      #     MLFLOW_URL=$(docker logs ngrok-mlflow 2>&1 | jq -r 'select(.msg=="started tunnel") | .url' | head -n 1)
-      #     echo "MLflow UI: $MLFLOW_URL" >> $GITHUB_STEP_SUMMARY
+      - name: Publish MLflow ngrok URL
+        run: |
+          MLFLOW_URL=$(docker logs ngrok-mlflow 2>&1 | jq -r 'select(.msg=="started tunnel") | .url' | head -n 1)
+          echo "MLflow UI: $MLFLOW_URL" >> $GITHUB_STEP_SUMMARY
 
 
 

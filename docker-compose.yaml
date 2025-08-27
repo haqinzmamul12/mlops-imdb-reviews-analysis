@@ -72,11 +72,11 @@ services:
     depends_on:
       - airflow
 
-  # ngrok-mlflow:
-  #   image: ngrok/ngrok:3
-  #   container_name: ngrok-mlflow
-  #   command: http mlflow:5000 --log=stdout --log-format=json
-  #   environment:
-  #     - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
-  #   depends_on:
-  #     - mlflow
+  ngrok-mlflow:
+    image: ngrok/ngrok:3
+    container_name: ngrok-mlflow
+    command: http mlflow:5000 --log=stdout --log-format=json
+    environment:
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+    depends_on:
+      - mlflow
