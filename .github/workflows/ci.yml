@@ -88,6 +88,10 @@ jobs:
 
           echo "Waiting for Airflow to be ready..."
           sleep 10
+
+          echo "Airflow logs"
+          docker logs airflow
+
           echo "container logs:"
           docker ps -a | grep airflow
 
