@@ -75,14 +75,15 @@ services:
   ngrok:
     image: ngrok/ngrok:3
     container_name: ngrok
-    command: start --log=stdout --log-format=json --config /etc/ngrok.yml
+    command: start --config /etc/ngrok.yml --log=stdout --log-format=json
     volumes:
-      - ./ngrok.yml:/etc/ngrok.yml
+      - ./ngrok.yaml:/etc/ngrok.yaml
     environment:
       - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
     depends_on:
       - airflow
       - mlflow
+
 
 
   # ngrok:
