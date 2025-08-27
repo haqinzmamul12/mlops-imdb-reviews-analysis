@@ -65,7 +65,7 @@ services:
 
   ngrok-airflow:
     image: ngrok/ngrok:3
-    container_name: ngrok
+    container_name: ngrok-airflow
     command: http airflow:8080 --log=stdout --log-format=json
     environment:
       - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}

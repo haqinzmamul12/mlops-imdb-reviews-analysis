@@ -123,11 +123,11 @@ jobs:
         run: |
           echo "⏳ Waiting for ngrok-airflow to initialize..."
           sleep 10
-          docker logs ngrok-airflow 2>&1 | grep -oE 'https://[a-z0-9]+\.ngrok-free\.app' | head -n 1
+          docker logs ngrok-airflow 2>&1 | jq -r 'select(.msg=="started tunnel") | .url' | head -n 1
 
       - name: Publish Airflow ngrok URL
         run: |
-          AIRFLOW_URL=$(docker logs ngrok-airflow 2>&1 | grep -oE 'https://[a-z0-9]+\.ngrok-free\.app' | head -n 1)
+          AIRFLOW_URL=$(docker logs ngrok-airflow 2>&1 | jq -r 'select(.msg=="started tunnel") | .url' | head -n 1)
           echo "Airflow UI: $AIRFLOW_URL" >> $GITHUB_STEP_SUMMARY
 
 
