@@ -1,8 +1,0 @@
-version: "2"
-tunnels:
-  airflow:
-    proto: http
-    addr: airflow:8080
-  mlflow:
-    proto: http
-    addr: mlflow:5000

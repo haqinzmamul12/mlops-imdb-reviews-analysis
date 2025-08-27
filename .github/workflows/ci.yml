@@ -68,13 +68,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        # with:
-        #   lfs: true    # ← This tells GitHub Actions to download LFS files automatically
+        with:
+          lfs: true    # ← This tells GitHub Actions to download LFS files automatically
 
-      # - name: Install Git LFS 
-      #   run: |
-      #     git lfs install
-      #     git lfs pull
+      - name: Install Git LFS 
+        run: |
+          git lfs install
+          git lfs pull
 
 
       - name: Set up Docker
@@ -119,38 +119,16 @@ jobs:
 
 
 
-      # - name: Get ngrok URL
-      #   run: |
-      #     # Wait for ngrok to initialize
-      #     sleep 10
-      #     docker logs ngrok 2>&1 | jq -r 'select(.msg=="started tunnel") | .url' | head -n 1
-
-      # - name: Publish ngrok URL
-      #   run: |
-      #     URL=$(docker logs ngrok 2>&1 | jq -r 'select(.msg=="started tunnel") | .url' | head -n 1)
-      #     echo "Airflow UI: $URL" >> $GITHUB_STEP_SUMMARY
-
-      - name: Publish ngrok URLs
+      - name: Get ngrok URL
         run: |
-          echo "Waiting for ngrok to establish tunnels..."
+          # Wait for ngrok to initialize
           sleep 10
+          docker logs ngrok 2>&1 | jq -r 'select(.msg=="started tunnel") | .url' | head -n 1
 
-          echo "Fetching ngrok public URLs..."
-
-          docker logs ngrok 2>&1 | tee ngrok.log
-
-          AIRFLOW_URL=$(grep -oE 'https://[a-z0-9]+\.ngrok-free\.app' ngrok.log | sed -n 1p)
-          MLFLOW_URL=$(grep -oE 'https://[a-z0-9]+\.ngrok-free\.app' ngrok.log | sed -n 2p)
-
-          echo "Airflow UI: $AIRFLOW_URL" >> $GITHUB_STEP_SUMMARY
-          echo "MLflow UI: $MLFLOW_URL" >> $GITHUB_STEP_SUMMARY
-
-          echo "Airflow URL: $AIRFLOW_URL"
-          echo "MLflow URL: $MLFLOW_URL"
-
-
-
-
+      - name: Publish ngrok URL
+        run: |
+          URL=$(docker logs ngrok 2>&1 | jq -r 'select(.msg=="started tunnel") | .url' | head -n 1)
+          echo "Airflow UI: $URL" >> $GITHUB_STEP_SUMMARY
 
 
       - name: Wait for Airflow
@@ -193,4 +171,4 @@ jobs:
 
 
       - name: Keep alive for 5 mints
-        run: sleep 120
+        run: sleep 300

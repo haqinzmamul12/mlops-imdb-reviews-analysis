@@ -53,45 +53,11 @@ services:
     user: "0:0"
 
 
-  mlflow:
-    image: ghcr.io/mlflow/mlflow:latest
-    container_name: mlflow
-    environment:
-      - MLFLOW_TRACKING_URI=http://0.0.0.0:5000
-    command: >
-      mlflow server 
-      --host 0.0.0.0 
-      --port 5000 
-      --backend-store-uri sqlite:///mlflow.db 
-      --default-artifact-root /mlflow/artifacts
-    ports:
-      - "5000:5000"
-    volumes:
-      - ./mlruns:/mlflow/artifacts
-
-
-
-
   ngrok:
     image: ngrok/ngrok:3
     container_name: ngrok
-    command: start --config /etc/ngrok.yml --log=stdout --log-format=json
-    volumes:
-      - ./ngrok.yml:/etc/ngrok.yml
+    command: http airflow:8080 --log=stdout --log-format=json
     environment:
       - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
     depends_on:
       - airflow
-      - mlflow
-
-
-
-  # ngrok:
-  #   image: ngrok/ngrok:3
-  #   container_name: ngrok
-  #   command: http airflow:8080 --log=stdout --log-format=json
-  #   environment:
-  #     - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
-  #   depends_on:
-  #     - airflow
-  #     - mlflow
