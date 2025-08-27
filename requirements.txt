@@ -9,4 +9,3 @@ pandera
 nltk
 apache-airflow
 pytest
-bowler
