@@ -14,12 +14,12 @@ jobs:
       - name: Checkout repo 
         uses: actions/checkout@v3 
 
-      - name: Install Git LFS
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y git-lfs
-          git lfs install
-          git lfs pull
+      # - name: Install Git LFS
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y git-lfs
+      #     git lfs install
+      #     git lfs pull
 
       - name: Set up Python
         uses: actions/setup-python@v4 
@@ -132,16 +132,22 @@ jobs:
 
       - name: Publish ngrok URLs
         run: |
-          sleep 10
+          echo "Waiting for ngrok to establish tunnels..."
+          sleep 20
+
           echo "Fetching ngrok public URLs..."
-          
-          NGROK_LOG=$(docker logs ngrok 2>&1)
-          
-          AIRFLOW_URL=$(echo "$NGROK_LOG" | grep -Eo 'https://[a-z0-9]+\.ngrok-free\.app' | sed -n 1p)
-          MLFLOW_URL=$(echo "$NGROK_LOG" | grep -Eo 'https://[a-z0-9]+\.ngrok-free\.app' | sed -n 2p)
-          
+
+          docker logs ngrok 2>&1 | tee ngrok.log
+
+          AIRFLOW_URL=$(grep -oE 'https://[a-z0-9]+\.ngrok-free\.app' ngrok.log | sed -n 1p)
+          MLFLOW_URL=$(grep -oE 'https://[a-z0-9]+\.ngrok-free\.app' ngrok.log | sed -n 2p)
+
           echo "Airflow UI: $AIRFLOW_URL" >> $GITHUB_STEP_SUMMARY
           echo "MLflow UI: $MLFLOW_URL" >> $GITHUB_STEP_SUMMARY
+
+          echo "Airflow URL: $AIRFLOW_URL"
+          echo "MLflow URL: $MLFLOW_URL"
+
 
 
 
@@ -187,4 +193,4 @@ jobs:
 
 
       - name: Keep alive for 5 mints
-        run: sleep 300
+        run: sleep 120
