@@ -49,6 +49,7 @@ services:
       - "8080:8080"
     volumes:
       - .:/opt/airflow
+      - ./airflow_orchestrator/dags:/opt/airflow/dags
 
     user: "0:0"
 
