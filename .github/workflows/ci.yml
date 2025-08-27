@@ -80,12 +80,12 @@ jobs:
       - name: Start Airflow using existing Image
         run: |
           export NGROK_AUTHTOKEN=${{ secrets.NGROK_AUTHTOKEN }}
-          # docker compose build --no-cache
+          docker compose build --no-cache
           docker compose up -d
 
           echo "Restart Airflow container to ensure DAG + volumes are ready"
           docker restart airflow
-          
+
           echo "Waiting for Airflow to be ready..."
           sleep 10
           echo "container logs:"
@@ -95,10 +95,10 @@ jobs:
           docker exec airflow airflow dags list
 
           echo "Checking DAG file inside container:"
-          docker exec airflow ls -l /opt/airflow/dags
+          docker exec airflow ls -l /opt/airflow
 
-          echo "Checking src file inside container:"
-          docker exec airflow ls -l /opt/airflow/src
+          # echo "Checking src file inside container:"
+          # docker exec airflow ls -l /opt/airflow/src
 
 
       - name: Check DAG import errors
