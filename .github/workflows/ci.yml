@@ -106,7 +106,12 @@ jobs:
 
 
       - name: Check DAG import errors
-        run: docker exec airflow airflow dags list-import-errors
+        run:
+          docker exec airflow airflow dags list-import-errors
+          echo "files are:" 
+          docker exec -it airflow bash
+          echo $PYTHONPATH
+          
 
 
 
