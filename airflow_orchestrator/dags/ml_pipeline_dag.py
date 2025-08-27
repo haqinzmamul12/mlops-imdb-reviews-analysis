@@ -12,11 +12,7 @@ import yaml
 def ingest_data():
     """Ingest raw data"""
     print("Data Ingestion Pipeline Started Successfully!")
-    with open("config/config.yaml", "r") as f:
-        config = yaml.safe_load(f)
-
-    raw_path = config["data"]["raw_path"]
-    df = load_imdb_data(raw_path)
+    df = load_imdb_data("raw")
     print("Data Ingestion Pipeline Started Successfully!")
     print(f"Data shape: {df.shape}")
 

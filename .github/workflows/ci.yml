@@ -71,7 +71,7 @@ jobs:
         with:
           lfs: true    # ← This tells GitHub Actions to download LFS files automatically
 
-      - name: Install Git LFS
+      - name: Install Git LFS 
         run: |
           git lfs install
           git lfs pull
@@ -110,7 +110,7 @@ jobs:
 
           echo "Dataset files are:"
           docker exec airflow ls -l /opt/airflow/dataset/
-          docker exec airflow head -n 5 /opt/airflow/dataset/raw.csv
+  
 
 
       - name: Check DAG import errors
@@ -119,16 +119,30 @@ jobs:
 
 
 
-      - name: Get ngrok URL
-        run: |
-          # Wait for ngrok to initialize
-          sleep 10
-          docker logs ngrok 2>&1 | jq -r 'select(.msg=="started tunnel") | .url' | head -n 1
+      # - name: Get ngrok URL
+      #   run: |
+      #     # Wait for ngrok to initialize
+      #     sleep 10
+      #     docker logs ngrok 2>&1 | jq -r 'select(.msg=="started tunnel") | .url' | head -n 1
 
-      - name: Publish ngrok URL
+      # - name: Publish ngrok URL
+      #   run: |
+      #     URL=$(docker logs ngrok 2>&1 | jq -r 'select(.msg=="started tunnel") | .url' | head -n 1)
+      #     echo "Airflow UI: $URL" >> $GITHUB_STEP_SUMMARY
+
+      - name: Publish ngrok URLs
         run: |
-          URL=$(docker logs ngrok 2>&1 | jq -r 'select(.msg=="started tunnel") | .url' | head -n 1)
-          echo "Airflow UI: $URL" >> $GITHUB_STEP_SUMMARY
+          sleep 10
+          echo "Fetching ngrok public URLs..."
+          
+          NGROK_LOG=$(docker logs ngrok 2>&1)
+          
+          AIRFLOW_URL=$(echo "$NGROK_LOG" | grep -Eo 'https://[a-z0-9]+\.ngrok-free\.app' | sed -n 1p)
+          MLFLOW_URL=$(echo "$NGROK_LOG" | grep -Eo 'https://[a-z0-9]+\.ngrok-free\.app' | sed -n 2p)
+          
+          echo "Airflow UI: $AIRFLOW_URL" >> $GITHUB_STEP_SUMMARY
+          echo "MLflow UI: $MLFLOW_URL" >> $GITHUB_STEP_SUMMARY
+
 
 
 
@@ -173,4 +187,4 @@ jobs:
 
 
       - name: Keep alive for 5 mints
-        run: sleep 120
+        run: sleep 300
