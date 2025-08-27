@@ -15,7 +15,7 @@ def ingest_data():
     with open("config/config.yaml", "r") as f:
         config = yaml.safe_load(f)
 
-    raw_path = config["data"]["raw_imdb"]
+    raw_path = config["data"]["raw_path"]
     df = load_imdb_data(raw_path)
     print("Data Ingestion Pipeline Started Successfully!")
     print(f"Data shape: {df.shape}")
