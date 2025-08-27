@@ -14,12 +14,12 @@ jobs:
       - name: Checkout repo 
         uses: actions/checkout@v3 
 
-      # - name: Install Git LFS
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt-get install -y git-lfs
-      #     git lfs install
-      #     git lfs pull
+      - name: Install Git LFS
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git-lfs
+          git lfs install
+          git lfs pull
 
       - name: Set up Python
         uses: actions/setup-python@v4 
@@ -133,7 +133,7 @@ jobs:
       - name: Publish ngrok URLs
         run: |
           echo "Waiting for ngrok to establish tunnels..."
-          sleep 20
+          sleep 10
 
           echo "Fetching ngrok public URLs..."
 

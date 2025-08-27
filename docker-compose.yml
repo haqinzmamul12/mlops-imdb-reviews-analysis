@@ -77,7 +77,7 @@ services:
     container_name: ngrok
     command: start --config /etc/ngrok.yml --log=stdout --log-format=json
     volumes:
-      - ./ngrok.yaml:/etc/ngrok.yaml
+      - ./ngrok.yml:/etc/ngrok.yml
     environment:
       - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
     depends_on:
