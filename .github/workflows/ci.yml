@@ -72,9 +72,9 @@ jobs:
       - name: Set up Docker
         uses: docker/setup-buildx-action@v3
 
-      - name: Build Airflow Docker image
-        run: |
-          docker build -t airflow-mini:latest .
+      # - name: Build Airflow Docker image
+      #   run: |
+      #     docker build -t airflow-mini:latest .
 
 
       - name: Start Airflow using existing Image
