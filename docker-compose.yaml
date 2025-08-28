@@ -68,7 +68,7 @@ services:
     container_name: ngrok-airflow
     command: http airflow:8080 --log=stdout --log-format=json
     environment:
-      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN_AIRFLOW}
     depends_on:
       - airflow
 

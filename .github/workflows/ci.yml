@@ -82,8 +82,9 @@ jobs:
 
 
       - name: Start Airflow using existing Image
-        run: |
+        run: | 
           export NGROK_AUTHTOKEN=${{ secrets.NGROK_AUTHTOKEN }}
+          export NGROK_AUTHTOKEN_AIRFLOW=${{ secrets.NGROK_AUTHTOKEN_AIRFLOW }}
           docker compose build --no-cache
           docker compose up -d
 
